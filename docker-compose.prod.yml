@@ -17,5 +17,22 @@ services:
       - db
     command: ["python", "-m", "ingestion_service.ingestor"]
 
+  api:
+    image: ghcr.io/moonlight-technology/sentiment-api:latest
+    env_file: .env
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+
+  web:
+    image: ghcr.io/moonlight-technology/sentiment-web:latest
+    depends_on:
+      - api
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+    ports:
+      - "3000:3000"
+
 volumes:
   postgres_data:
