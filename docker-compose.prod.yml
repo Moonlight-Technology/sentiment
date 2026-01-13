@@ -11,7 +11,7 @@ services:
       - "5432:5432"
 
   ingestor:
-    image: ghcr.io/Moonlight-Technology/sentiment:latest
+    image: ghcr.io/moonlight-technology/sentiment:latest
     env_file: .env
     depends_on:
       - db
