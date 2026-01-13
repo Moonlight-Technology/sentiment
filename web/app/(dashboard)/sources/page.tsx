@@ -27,7 +27,12 @@ export default function SourcesPage() {
 
   const createMutation = useMutation({
     mutationFn: () => {
-      const config = form.type === "csv" ? { path: form.url } : { url: form.url };
+      const config: Record<string, string> = {};
+      if (form.type === "csv") {
+        config.path = form.url;
+      } else {
+        config.url = form.url;
+      }
       return createSource({
         name: form.name,
         type: form.type,
