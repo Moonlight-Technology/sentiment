@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sentiment-dash.example/schemas/sentiment_result.schema.json",
+  "title": "SentimentResult",
+  "description": "Model output attached to a text item, supporting multiple models/versions.",
+  "type": "object",
+  "required": [
+    "id",
+    "text_item_id",
+    "model_name",
+    "model_version",
+    "scored_at",
+    "label",
+    "score"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for this sentiment inference run."
+    },
+    "text_item_id": {
+      "type": "string",
+      "description": "Foreign key linking back to the normalized TextItem.id."
+    },
+    "model_name": {
+      "type": "string",
+      "description": "Short code for the model or API provider (hf_roberta, openai_sentiment)."
+    },
+    "model_version": {
+      "type": "string",
+      "description": "Semantic version or git hash for reproducibility."
+    },
+    "pipeline_stage": {
+      "type": "string",
+      "description": "Where the score was produced: batch, realtime, retrain_eval.",
+      "default": "batch"
+    },
+    "scored_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "UTC timestamp when the model produced this score."
+    },
+    "label": {
+      "type": "string",
+      "enum": ["positive", "neutral", "negative"],
+      "description": "Primary sentiment class. Extend enum for multi-class models."
+    },
+    "score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Confidence/probability associated with the label."
+    },
+    "scores_by_label": {
+      "type": "object",
+      "description": "Optional full distribution keyed by label.",
+      "additionalProperties": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1
+      }
+    },
+    "explanations": {
+      "type": "array",
+      "description": "Token or span attributions for explainability.",
+      "items": {
+        "type": "object",
+        "required": ["text", "importance"],
+        "properties": {
+          "text": {"type": "string"},
+          "importance": {"type": "number", "minimum": -1, "maximum": 1}
+        },
+        "additionalProperties": false
+      }
+    },
+    "annotations": {
+      "type": "object",
+      "description": "Manual reviewer overrides or QA notes.",
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}

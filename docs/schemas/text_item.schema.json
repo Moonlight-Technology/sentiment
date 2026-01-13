@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sentiment-dash.example/schemas/text_item.schema.json",
+  "title": "TextItem",
+  "description": "Normalized representation of an ingested textual artifact (news article, caption, comment).",
+  "type": "object",
+  "required": [
+    "id",
+    "source_type",
+    "source_id",
+    "ingested_at",
+    "language",
+    "body"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Stable UUID generated when the item first enters the pipeline."
+    },
+    "source_type": {
+      "type": "string",
+      "description": "High-level channel, e.g., news_api, rss_feed, instagram_post, instagram_comment.",
+      "examples": ["news_api", "rss_feed", "instagram_post"]
+    },
+    "source_id": {
+      "type": "string",
+      "description": "Producer-specific identifier (article URL, IG media id)."
+    },
+    "source_metadata": {
+      "type": "object",
+      "description": "Unstructured metadata blob for source-specific attributes (author, tags, follower counts).",
+      "additionalProperties": true
+    },
+    "ingested_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the pipeline stored the item (UTC)."
+    },
+    "published_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Original publish timestamp when available."
+    },
+    "language": {
+      "type": "string",
+      "description": "ISO 639-1/639-3 language code from detection stage.",
+      "minLength": 2,
+      "maxLength": 5
+    },
+    "title": {
+      "type": "string",
+      "description": "Optional headline or caption title."
+    },
+    "body": {
+      "type": "string",
+      "description": "Plain-text body after cleaning (HTML stripped, emojis normalized)."
+    },
+    "entities": {
+      "type": "array",
+      "description": "Structured entities resolved during preprocessing (companies, tickers, hashtags).",
+      "items": {
+        "type": "object",
+        "required": ["type", "value"],
+        "properties": {
+          "type": {"type": "string"},
+          "value": {"type": "string"},
+          "confidence": {"type": "number", "minimum": 0, "maximum": 1}
+        },
+        "additionalProperties": false
+      }
+    },
+    "labels": {
+      "type": "array",
+      "description": "Optional manual labels for training/QA workflows.",
+      "items": {"type": "string"}
+    }
+  },
+  "additionalProperties": false
+}
