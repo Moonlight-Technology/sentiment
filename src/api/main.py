@@ -1,6 +1,8 @@
 """FastAPI app factory."""
 from __future__ import annotations
 
+import os
+
 from fastapi import FastAPI
 
 from .dependencies import init_application_state
@@ -11,9 +13,12 @@ def create_app() -> FastAPI:
     init_application_state()
     app = FastAPI(title="Sentiment Analysis API", version="1.0.0")
 
+    cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",")
+    cors_origins = [origin.strip() for origin in cors_origins if origin.strip()]
+
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["http://localhost:3000"],  # atau ["*"] untuk dev
+        allow_origins=cors_origins,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
